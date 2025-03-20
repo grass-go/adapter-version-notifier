@@ -41,30 +41,33 @@ def getYesterdayExtInfo(yesterdayFile):
     return data
 
 def sendSlackNotification(text):
-    WEBHOOK_URL = "https://hooks.slack.com/services/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"
+    SLACK_POST_URL = "https://slack.com/api/chat.postMessage"
     payload = {
         "text": text,
-        "username": "我的机器人",  # 自定义显示名称
-        "channel": "adapter-notifier"  # 可覆盖默认频道
+        "channel": "C08HD8FNXC6"  # adapter-notifier频道
     }
-
     response = requests.post(
-        WEBHOOK_URL,
+        SLACK_POST_URL,
         data=json.dumps(payload),
-        headers={'Content-Type': 'application/json'}
+        headers={'Content-Type': 'application/json; charset=utf-8'}
     )
     return response.status_code == 200
 
-def SendNotificationOrNot(todayInfo, yesterdayInfo):
+def SendNotificationOrNot(todayInfo, yesterdayInfo, today_str):
+    sendCounts = 0
     for eachExt in yesterdayInfo:
         if eachExt in todayInfo:
             if todayInfo[eachExt]["Version"] != yesterdayInfo[eachExt]["Version"]:
-                sendSlackNotification(f'{eachExt} Version changed from {yesterdayInfo[eachExt]["Version"]} to {todayInfo[eachExt]["Version"]}')
+                sendSlackNotification(f'{eachExt} Version changed from {yesterdayInfo[eachExt]["Version"]} to {todayInfo[eachExt]["Version"]} on {today_str}!')
+                sendCounts = sendCounts + 1
+
         else:
-            sendSlackNotification(f"{eachExt} lacked today!")
-
-
-
+            sendSlackNotification(f"{eachExt} lacked on {today_str}!")
+            sendCounts = sendCounts + 1
+    if sendCounts == 0:
+        sendSlackNotification(f"Extensions have no update on {today_str}")
+    else:
+        sendSlackNotification(f"Extensions update check finished!")
 
 
 if __name__ == "__main__":
@@ -96,16 +99,4 @@ if __name__ == "__main__":
     print(todayInfo)
     print("Yesterday's Info:")
     print(yesterdayInfo)
-    SendNotificationOrNot(todayInfo, yesterdayInfo)
-
-
-
-
-
-
-
-
-'''
-curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World!"}' https://hooks.slack.com/services/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
-
-'''
+    SendNotificationOrNot(todayInfo, yesterdayInfo, today_str)
