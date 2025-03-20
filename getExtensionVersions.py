@@ -16,7 +16,6 @@ def getExtensionVersion(gName, gId):
         currValue = selectedObjs[i + 1].get_text("content") if selectedObjs[i + 1] else "未找到"
         if currKey == "Version" or currKey == "Updated" or currKey == "Size":
             extensionInfo[currKey] = currValue
-    # print(extensionInfo)
     return extensionInfo
 
 def write_json_file(file_path,data):
@@ -33,7 +32,6 @@ def getTodayExtInfo(versionFile):
         curExtensionInfo = getExtensionVersion(extensionDict[eachExtension]["gname"],
                                                extensionDict[eachExtension]["id"])
         allExtInfo[eachExtension] = curExtensionInfo
-    print(allExtInfo)
     write_json_file(versionFile, allExtInfo)
     return allExtInfo
 
@@ -94,7 +92,9 @@ if __name__ == "__main__":
 
     todayInfo = getTodayExtInfo(todayFile)
     yesterdayInfo = getYesterdayExtInfo(yesterdayFile)
+    print("Today's Info:")
     print(todayInfo)
+    print("Yesterday's Info:")
     print(yesterdayInfo)
     SendNotificationOrNot(todayInfo, yesterdayInfo)
 
