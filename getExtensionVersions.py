@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 from datetime import datetime,timedelta
-import os
+import os,sys
 
 def getExtensionVersion(gName, gId):
     url = f"https://chrome.google.com/webstore/detail/{gName}/{gId}"
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     # "imtoken":{"gname":"", "id":""}, #目前没有插件
     # ledger:{}, #不需要
     '''
-    current_path = os.getcwd()
+    current_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     today = datetime.now()
     today_str = today.strftime('%Y-%m-%d')
     yesterday = today - timedelta(days=1)
